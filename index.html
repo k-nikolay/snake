@@ -98,6 +98,8 @@
         ctx = canvas.getContext("2d");
         document.body.appendChild(canvas);
 
+        ctx.font = "12px Helvetica";
+
         frames = 0;
         keystate = {};
         document.addEventListener("keydown",function (evt) {
@@ -112,6 +114,8 @@
     }
 
     function init() {
+        score = 0;
+
         grid.init(EMPTY, COLS, ROWS);
 
         var sp = {x:Math.floor(COLS/2), y:ROWS-1};
@@ -131,10 +135,14 @@
     function update() {
         frames++;
 
-        if (keystate[KEY_LEFT]) snake.direction = LEFT;
-        if (keystate[KEY_RIGHT]) snake.direction = RIGHT;
-        if (keystate[KEY_UP]) snake.direction = UP;
-        if (keystate[KEY_DOWN]) snake.direction = DOWN;
+        if (keystate[KEY_LEFT] && snake.direction !== RIGHT)
+            snake.direction = LEFT;
+        if (keystate[KEY_RIGHT] && snake.direction !== LEFT)
+            snake.direction = RIGHT;
+        if (keystate[KEY_UP] && snake.direction !== DOWN)
+            snake.direction = UP;
+        if (keystate[KEY_DOWN] && snake.direction !== UP)
+            snake.direction = DOWN;
 
         if (frames%5 === 0){
             var nx = snake.last.x;
@@ -164,6 +172,7 @@
 
             if(grid.get(nx, ny) === FRUIT){
                 var tail = {x:nx, y:ny};
+                score++;
                 setFood();
             } else {
                 var tail = snake.remove();
@@ -171,7 +180,6 @@
                 tail.x = nx;
                 tail.y = ny;
             }
-
 
             grid.set(SNAKE, tail.x, tail.y);
 
@@ -199,6 +207,8 @@
                 ctx.fillRect(x*tw, y*th, tw, th);
             }
         }
+        ctx.fillStyle = "#000";
+        ctx.fillText("SCORE: " + score, 10, canvas.height-10);
     }
     main();
 
