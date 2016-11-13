@@ -1,2 +1,2 @@
 # snake
-snake game html5
+snake game html5 canvas
